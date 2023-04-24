@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api',
     # 'django.contrib.gis',
-    'django_filters'
+    'django_filters',
+    'rest_registration'
 ]
 
 MIDDLEWARE = [
@@ -143,4 +144,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-
+REST_REGISTRATION = {
+    'REGISTER_VERIFICATION_ENABLED': False,
+    'REGISTER_EMAIL_VERIFICATION_ENABLED': False,
+    'RESET_PASSWORD_VERIFICATION_ENABLED': False,
+}

@@ -47,43 +47,12 @@ class StationNestSerializer(serializers.ModelSerializer):
 
 
 class SourceSerializer(serializers.ModelSerializer):
-    access = serializers.StringRelatedField()
-    station = StationNestSerializer()
+    # access = serializers.StringRelatedField()
+    # station = StationNestSerializer()
 
     class Meta:
         model = Source
         fields = '__all__'
-
-    def create(self, validated_data):
-        # Check if the source is public
-        access = validated_data.get('access')
-        if access.name == 'Public':
-            source = Source.objects.create(**validated_data)
-            # Add the public source to existing profiles
-            profiles = Profile.objects.all()
-            for profile in profiles:
-                profile.sources.add(source)
-            return source
-        else:
-            return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        access = validated_data.get('access', instance.access)
-        sources_with_old_access = Source.objects.filter(access=instance.access)
-        sources_with_new_access = Source.objects.filter(access=access)
-        profiles = Profile.objects.filter(
-            sources__in=sources_with_old_access,
-            access_level__lte=access.level,
-        )
-        for profile in profiles:
-            # remove the source from the profile if it no longer matches the access level
-            if instance in profile.sources.all() and instance not in sources_with_new_access:
-                profile.sources.remove(instance)
-            # add the source to the profile if it now matches the access level
-            elif instance not in profile.sources.all() and instance in sources_with_new_access:
-                profile.sources.add(instance)
-        return super().update(instance, validated_data)
-
 
 
 class MeteoDataSerializer(serializers.ModelSerializer):
@@ -115,7 +84,7 @@ class MeteoDataSerializer(serializers.ModelSerializer):
                 if sensor_type in station.sensors.values_list('name', flat=True):
                     filtered_content[sensor_type] = sensor_value
 
-            meteo_data = MeteoData.objects.create(content=filtered_content, source=source_data)
+            meteo_data = MeteoData.objects.create(content=filtered_content, source=source_data, station=station)
 
             station.meteodata_list.add(meteo_data)
             station.save()

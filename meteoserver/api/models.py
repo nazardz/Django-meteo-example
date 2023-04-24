@@ -1,5 +1,7 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Max
 
 
 # Create your models here.
@@ -39,13 +41,24 @@ class Source(models.Model):
 class MeteoData(models.Model):
 	date_time = models.DateTimeField(auto_now_add=True, editable=False)
 	content = models.JSONField(default=dict, editable=False)
-	source = models.ForeignKey(Source, on_delete=models.CASCADE, related_name='data')
+	source = models.ForeignKey(Source, on_delete=models.SET_NULL, related_name='data', null=True)
+	station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='data')
 
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE, editable=False)
 	request_count = models.IntegerField(default=0, auto_created=0, editable=False)
 	sources = models.ManyToManyField(Source)
-	access_level = models.IntegerField(default=0, auto_created=0)
+	access_level = models.IntegerField(default=1, auto_created=1, validators=[MinValueValidator(1)])
+
+	# def save(self, *args, **kwargs):
+	# 	max_access_level = SourceAccess.objects.aggregate(Max('level'))['level__max']
+	# 	if self.access_level > max_access_level:
+	# 		self.access_level = max_access_level
+	# 	elif self.access_level < 1:
+	# 		self.access_level = 1
+	#
+	# 	super(Profile, self).save(*args, **kwargs)
+
 
 

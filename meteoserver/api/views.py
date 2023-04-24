@@ -41,12 +41,13 @@ class SourceList(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = SourceFilter
 
-    def perform_create(self, serializer):
-        source = serializer.save()
-        superusers = User.objects.filter(is_superuser=True)
-        for user in superusers:
-            profile = Profile.objects.get(user=user)
-            profile.sources.add(source)
+    # def perform_create(self, serializer):
+    #     source = serializer.save()
+    #     superusers = User.objects.filter(is_superuser=True)
+    #     for user in superusers:
+    #         profile = Profile.objects.get(user=user)
+    #         profile.sources.add(source)
+    #         profile.save()
 
 
 

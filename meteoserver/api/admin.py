@@ -18,8 +18,8 @@ class SourceAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'station', 'access')
 
 
-class MeteoDataAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date_time', 'source')
+# class MeteoDataAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'date_time', 'source')
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -29,6 +29,6 @@ class ProfileAdmin(admin.ModelAdmin):
 admin.site.register(Sensor, SensorAdmin)
 admin.site.register(Station, StationAdmin)
 admin.site.register(Source, SourceAdmin)
-admin.site.register(MeteoData, MeteoDataAdmin)
+#admin.site.register(MeteoData, MeteoDataAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(SourceAccess, SourceAccessAdmin)

@@ -18,6 +18,8 @@ class MeteoDataFilter(django_filters.FilterSet):
     date_time_to = django_filters.DateTimeFilter(field_name='date_time', lookup_expr='lte')
     source = django_filters.AllValuesMultipleFilter(field_name='source__title', widget=CSVWidget())
     source_id = django_filters.AllValuesMultipleFilter(field_name='source__id', widget=CSVWidget())
+    station = django_filters.AllValuesMultipleFilter(field_name='station__location', widget=CSVWidget())
+    station_id = django_filters.AllValuesMultipleFilter(field_name='station__id', widget=CSVWidget())
     sensor = SensorTypeFilter(field_name='content')
     year = django_filters.NumberFilter(field_name='date_time__year')
     month = django_filters.NumberFilter(field_name='date_time__month')
@@ -25,7 +27,8 @@ class MeteoDataFilter(django_filters.FilterSet):
 
     class Meta:
         model = MeteoData
-        fields = ['year', 'month', 'day', 'date_time_from', 'date_time_to', 'source', 'source_id', 'sensor']
+        fields = ['year', 'month', 'day', 'date_time_from', 'date_time_to', 'source', 'source_id',
+                  'sensor', 'station', 'station_id']
 
 
 class SourceFilter(django_filters.FilterSet):
