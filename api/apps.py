@@ -11,5 +11,4 @@ class ApiConfig(AppConfig):
 		scheduler = BackgroundScheduler()
 		scheduler.add_job(update_weather_data, 'interval', hours=1)
 		if not scheduler.running:
-			# print("Station sheduler started. Interval = 1 hour")
 			scheduler.start()
