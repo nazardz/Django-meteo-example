@@ -63,42 +63,46 @@ class MeteoDataSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         user = self.context['request'].user
-        source_data = validated_data['source']
-
-        if not user.profile.sources.filter(pk=source_data.pk).exists():
-            raise serializers.ValidationError('User does not have access to this source.')
-
-        station = source_data.station
-        ip_address = station.ip_address
-        ip_port = station.ip_port
-        if not ip_port or ip_port == 0:
-            url = f"http://{ip_address}"
-        else:
-            url = f"http://{ip_address}:{ip_port}"
         try:
-            response = requests.get(url)
-            content = response.json()
+            source_data = validated_data['source']
 
-            filtered_content = {}
-            for sensor_type, sensor_value in content.items():
-                if sensor_type in station.sensors.values_list('name', flat=True):
-                    filtered_content[sensor_type] = sensor_value
+            if not user.profile.sources.filter(pk=source_data.pk).exists():
+                raise serializers.ValidationError('User does not have access to this source.')
 
-            meteo_data = MeteoData.objects.create(content=filtered_content, source=source_data, station=station)
+            station = source_data.station
+            ip_address = station.ip_address
+            ip_port = station.ip_port
+            if not ip_port or ip_port == 0:
+                url = f"http://{ip_address}"
+            else:
+                url = f"http://{ip_address}:{ip_port}"
+            try:
+                response = requests.get(url)
+                content = response.json()
 
-            station.meteodata_list.add(meteo_data)
-            station.save()
+                filtered_content = {}
+                for sensor_type, sensor_value in content.items():
+                    if sensor_type in station.sensors.values_list('name', flat=True):
+                        filtered_content[sensor_type] = sensor_value
+
+                meteo_data = MeteoData.objects.create(content=filtered_content, source=source_data, station=station)
+
+                station.meteodata_list.add(meteo_data)
+                station.save()
 
 
-            #if user.is_authenticated:
-            profile = user.profile
-            profile.request_count += 1
-            profile.save()
+                #if user.is_authenticated:
+                profile = user.profile
+                profile.request_count += 1
+                profile.save()
 
-            return meteo_data
-        except Exception as e:
+                return meteo_data
+            except Exception as e:
+                print(e)
+                raise serializers.ValidationError("Could not connect to source {}".format(source_data))
+        except AttributeError as e:
             print(e)
-            raise serializers.ValidationError("Could not connect to source {}".format(source_data))
+            raise serializers.ValidationError("Provide valid Source")
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:

@@ -79,11 +79,21 @@ WSGI_APPLICATION = 'meteoserver.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         # 'ENGINE': 'django.contrib.gis.db.backends.mysql',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        # 'ENGINE': 'django.contrib.gis.db.backends.mysql',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'Cluster0',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'mongodb+srv://nazrdanr:admin123@meteos.phgu3c8.mongodb.net/?retryWrites=true&w=majority',
+        },
     }
 }
 

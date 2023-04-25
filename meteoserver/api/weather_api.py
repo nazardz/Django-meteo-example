@@ -3,7 +3,7 @@ import requests
 from .models import Station, MeteoData
 
 def update_weather_data():
-	print('fetch meteodata')
+	print('fetch meteodata from Stations')
 	stations = Station.objects.all()
 	for station in stations:
 		if not station.ip_port or station.ip_port == 0:
