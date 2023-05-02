@@ -43,16 +43,19 @@ class StationNestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Station
-        fields = ['location', 'sensors']
+        fields = ['id', 'location', 'sensors']
 
 
 class SourceSerializer(serializers.ModelSerializer):
-    # access = serializers.StringRelatedField()
-    # station = StationNestSerializer()
+    location = serializers.CharField(source='station.location', read_only=True)
+    sensors = serializers.StringRelatedField(source='station.sensors', many=True, read_only=True)
 
     class Meta:
         model = Source
-        fields = '__all__'
+        fields = ['id', 'title', 'station', 'location', 'sensors', 'access']
+    # class Meta:
+    #     model = Source
+    #     fields = '__all__'
 
 
 class MeteoDataSerializer(serializers.ModelSerializer):
