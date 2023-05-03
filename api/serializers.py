@@ -46,16 +46,28 @@ class StationNestSerializer(serializers.ModelSerializer):
         fields = ['id', 'location', 'sensors']
 
 
+class MeteoDataSerializer_nest(serializers.ModelSerializer):
+    class Meta:
+        model = MeteoData
+        fields = ['date_time', 'content']
+
+
+
 class SourceSerializer(serializers.ModelSerializer):
     location = serializers.CharField(source='station.location', read_only=True)
     sensors = serializers.StringRelatedField(source='station.sensors', many=True, read_only=True)
+    sensors_count = serializers.SerializerMethodField()
+    meteodata = MeteoDataSerializer_nest(source='station.meteodata_list', many=True, read_only=True) #serializers.StringRelatedField(source='station.meteodata_list', many=True, read_only=True)
 
     class Meta:
         model = Source
-        fields = ['id', 'title', 'station', 'location', 'sensors', 'access']
+        fields = ['id', 'title', 'station', 'location', 'sensors', 'access', 'sensors_count', 'meteodata']
     # class Meta:
     #     model = Source
     #     fields = '__all__'
+
+    def get_sensors_count(self, obj):
+        return obj.station.sensors.count()
 
 
 class MeteoDataSerializer(serializers.ModelSerializer):
@@ -105,7 +117,7 @@ class MeteoDataSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Could not connect to source {}".format(source_data))
         except AttributeError as e:
             print(e)
-            raise serializers.ValidationError("Provide valid Source")
+            raise serializers.ValidationError(e)
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
