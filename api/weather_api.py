@@ -22,5 +22,5 @@ def update_weather_data():
 			# source = Source.objects.get(name='Weather API')
 			meteo_data = MeteoData.objects.create(content=filtered_content, station=station)
 
-			station.meteodata_list.add(meteo_data)
+			# station.meteodata_list.add(meteo_data)
 			station.save()

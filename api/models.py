@@ -25,7 +25,7 @@ class Station(models.Model):
 	sensors = models.ManyToManyField(Sensor)
 	ip_port = models.IntegerField(null=True)
 	geo_pointer = models.JSONField(default=dict({'latitude': 0.0, 'longitude': 0.0}))
-	meteodata_list = models.ManyToManyField('MeteoData', default=None, editable=False, related_name='stations')
+	# meteodata_list = models.ManyToManyField('MeteoData', default=None, editable=False, related_name='stations')
 
 	def __str__(self):
 		return self.location

@@ -8,7 +8,7 @@ class SensorTypeFilter(django_filters.CharFilter):
         if value:
             sensor_types = value.split(",")
             for sensor_type in sensor_types:
-                qs = qs.filter(content__has_key=sensor_type)
+                qs = qs.filter(content__icontains=sensor_type)
             return qs
         return qs
 

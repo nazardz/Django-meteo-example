@@ -57,11 +57,12 @@ class SourceSerializer(serializers.ModelSerializer):
     location = serializers.CharField(source='station.location', read_only=True)
     sensors = serializers.StringRelatedField(source='station.sensors', many=True, read_only=True)
     sensors_count = serializers.SerializerMethodField()
-    meteodata = MeteoDataSerializer_nest(source='station.meteodata_list', many=True, read_only=True) #serializers.StringRelatedField(source='station.meteodata_list', many=True, read_only=True)
+    geo_pointer = serializers.DictField(source='station.geo_pointer', read_only=True)
+    # meteodata = MeteoDataSerializer_nest(source='station.meteodata_list', many=True, read_only=True) #serializers.StringRelatedField(source='station.meteodata_list', many=True, read_only=True)
 
     class Meta:
         model = Source
-        fields = ['id', 'title', 'station', 'location', 'sensors', 'access', 'sensors_count', 'meteodata']
+        fields = ['id', 'title', 'station', 'location', 'sensors', 'access', 'sensors_count', 'geo_pointer'] #, 'meteodata']
     # class Meta:
     #     model = Source
     #     fields = '__all__'
@@ -71,6 +72,8 @@ class SourceSerializer(serializers.ModelSerializer):
 
 
 class MeteoDataSerializer(serializers.ModelSerializer):
+    station = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = MeteoData
         fields = '__all__'
@@ -102,9 +105,8 @@ class MeteoDataSerializer(serializers.ModelSerializer):
 
                 meteo_data = MeteoData.objects.create(content=filtered_content, source=source_data, station=station)
 
-                station.meteodata_list.add(meteo_data)
+                # station.meteodata_list.add(meteo_data)
                 station.save()
-
 
                 #if user.is_authenticated:
                 profile = user.profile

@@ -46,7 +46,6 @@ class Migration(migrations.Migration):
                 ('ip_address', models.GenericIPAddressField(default='192.168.204.68', protocol='IPv4')),
                 ('ip_port', models.IntegerField(null=True)),
                 ('geo_pointer', models.JSONField(default={'latitude': 0.0, 'longitude': 0.0})),
-                ('meteodata_list', models.ManyToManyField(default=None, editable=False, related_name='stations', to='api.meteodata')),
                 ('sensors', models.ManyToManyField(to='api.sensor')),
             ],
         ),
